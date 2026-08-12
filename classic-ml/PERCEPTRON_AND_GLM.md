@@ -4,441 +4,293 @@
 
 ### Logistic Regression vs. Perceptron
 
-| Logistic / Sigmoid Function               | Perceptron / Step Function                               |
-| ----------------------------------------- | -------------------------------------------------------- |
-| $g(z)=\frac{1}{1+e^{-z}}$                 | $g(z)=\begin{cases}1, & z \ge 0 \ 0, & z < 0\end{cases}$ |
-| $h_\theta(x)=\frac{1}{1+e^{-\theta^T x}}$ | $h_\theta(x)=g(\theta^T x)$                              |
+| Logistic / Sigmoid Function                                      | Perceptron / Step Function                          |
+| ---------------------------------------------------------------- | --------------------------------------------------- |
+| **Sigmoid:**<br>g(z) = 1 / (1 + e⁻ᶻ)                             | **Step:**<br>g(z) = 1 if z ≥ 0<br>g(z) = 0 if z < 0 |
+| **Hypothesis:**<br>h<sub>θ</sub>(x) = 1 / (1 + e<sup>−θᵀx</sup>) | **Hypothesis:**<br>h<sub>θ</sub>(x) = g(θᵀx)        |
+| Output is a probability between 0 and 1.                         | Output is either 0 or 1.                            |
 
-The main difference is that logistic regression produces a probability in the range $[0,1]$, while the perceptron produces a binary prediction.
+---
 
 ### Batch Gradient Ascent for the Perceptron
 
-The parameter update is
+The parameter update is:
 
-$$
-\theta_j := \theta_j + \alpha \sum_{i=0}^{m}
-\left(y^{(i)}-h_\theta(x^{(i)})\right)x_j^{(i)}
-$$
+<p align="center">
+<strong>θ<sub>j</sub> ← θ<sub>j</sub> + α Σ<sub>i=0</sub><sup>m</sup> (y<sup>(i)</sup> − h<sub>θ</sub>(x<sup>(i)</sup>))x<sub>j</sub><sup>(i)</sup></strong>
+</p>
 
-where:
+Where:
 
-* $\alpha$ is the learning rate.
-* $y^{(i)}$ is the true label.
-* $h_\theta(x^{(i)})$ is the predicted label.
-* $x_j^{(i)}$ is the $j$-th feature of example $i$.
+* **α** = learning rate
+* **y<sup>(i)</sup>** = true label
+* **h<sub>θ</sub>(x<sup>(i)</sup>)** = predicted label
+* **x<sub>j</sub><sup>(i)</sup>** = feature `j` of training example `i`
 
-For the step-function classifier,
+For the perceptron:
 
-$$
-y^{(i)}-h_\theta(x^{(i)}) \in {-1,0,1}.
-$$
-
-* If the prediction is correct, the error is $0$ and there is no update for that example.
-* If the prediction is incorrect, the error is either $+1$ or $-1$, depending on the true label and prediction.
+* If the prediction is **correct**, then the error is **0**, so there is no update.
+* If the prediction is **incorrect**, then the error is either **+1** or **−1**.
 
 ---
 
-## Exponential Families
+# Exponential Families
 
-A probability distribution belongs to the **exponential family** if it can be written in the form
+A probability distribution belongs to the **exponential family** if it can be written in the form:
 
-$$
-P(y;\eta)
-=========
+<p align="center">
+<strong>P(y; η) = b(y) exp(ηᵀT(y) − a(η))</strong>
+</p>
 
-b(y)\exp\left(\eta^T T(y)-a(\eta)\right).
-$$
+### Components
 
-Here:
-
-* $y$ is the observed data.
-* $\eta$ is the **natural parameter**.
-* $T(y)$ is the **sufficient statistic**.
-* $b(y)$ is the **base measure**.
-* $a(\eta)$ is the **log-partition function**.
+| Symbol   | Meaning                |
+| -------- | ---------------------- |
+| **y**    | Observed data          |
+| **η**    | Natural parameter      |
+| **T(y)** | Sufficient statistic   |
+| **b(y)** | Base measure           |
+| **a(η)** | Log-partition function |
 
 ---
 
-## Examples
+# Examples
 
-### Bernoulli Distribution
+## Bernoulli Distribution
 
-For binary data,
+For binary data:
 
-$$
-y\in{0,1}.
-$$
+<p align="center"><strong>y ∈ {0, 1}</strong></p>
 
-Let
+Let:
 
-$$
-\phi=P(y=1).
-$$
+<p align="center"><strong>φ = P(y = 1)</strong></p>
 
-The Bernoulli probability mass function is
+The Bernoulli probability mass function is:
 
-$$
-P(y;\phi)
-=========
+<p align="center">
+<strong>P(y; φ) = φ<sup>y</sup>(1 − φ)<sup>1−y</sup></strong>
+</p>
 
-\phi^y(1-\phi)^{1-y}.
-$$
+Rewrite it using an exponential:
 
-We can rewrite this using an exponential:
+<p align="center">
+<strong>
+P(y; φ) = exp(log(φ<sup>y</sup>(1 − φ)<sup>1−y</sup>))
+</strong>
+</p>
 
-$$
-P(y;\phi)
-=========
+Using logarithm rules:
 
-\exp\left(
-\log\left(
-\phi^y(1-\phi)^{1-y}
-\right)
-\right).
-$$
+<p align="center">
+<strong>
+P(y; φ) = exp(y log φ + (1 − y) log(1 − φ))
+</strong>
+</p>
 
-Using logarithm rules,
+Expand the expression:
 
-$$
-P(y;\phi)
-=========
+<p align="center">
+<strong>
+P(y; φ) = exp(y log φ − y log(1 − φ) + log(1 − φ))
+</strong>
+</p>
 
-\exp\left(
-y\log\phi
-+
-(1-y)\log(1-\phi)
-\right).
-$$
+Therefore:
 
-Expanding,
+<p align="center">
+<strong>
+P(y; φ) = exp(y log(φ / (1 − φ)) + log(1 − φ))
+</strong>
+</p>
 
-$$
-P(y;\phi)
-=========
+Compare this with the exponential-family form:
 
-\exp\left(
-y\log\phi
----------
+<p align="center">
+<strong>P(y; η) = b(y) exp(ηT(y) − a(η))</strong>
+</p>
 
-y\log(1-\phi)
-+
-\log(1-\phi)
-\right).
-$$
+We can identify:
 
-Therefore,
+<p align="center"><strong>b(y) = 1</strong></p>
 
-$$
-P(y;\phi)
-=========
+<p align="center"><strong>T(y) = y</strong></p>
 
-\exp\left(
-y\log\left(\frac{\phi}{1-\phi}\right)
-+
-\log(1-\phi)
-\right).
-$$
+<p align="center">
+<strong>
+η = log(φ / (1 − φ))
+</strong>
+</p>
 
-Now compare this with the exponential-family form:
+### Solving for φ
 
-$$
-P(y;\eta)
-=========
+Starting from:
 
-b(y)\exp\left(
-\eta T(y)-a(\eta)
-\right).
-$$
+<p align="center">
+<strong>
+η = log(φ / (1 − φ))
+</strong>
+</p>
 
-We can identify the individual components as
+Exponentiating both sides:
 
-$$
-b(y)=1,
-$$
+<p align="center">
+<strong>
+e<sup>η</sup> = φ / (1 − φ)
+</strong>
+</p>
 
-$$
-T(y)=y,
-$$
+Rearranging:
 
-and
+<p align="center">
+<strong>
+φ = e<sup>η</sup> / (1 + e<sup>η</sup>)
+</strong>
+</p>
 
-$$
-\eta
-====
+Therefore:
 
-\log\left(
-\frac{\phi}{1-\phi}
-\right).
-$$
-
-### Solving for $\phi$
-
-Starting with
-
-$$
-\eta
-====
-
-\log\left(
-\frac{\phi}{1-\phi}
-\right),
-$$
-
-exponentiating both sides gives
-
-$$
-e^\eta
-======
-
-\frac{\phi}{1-\phi}.
-$$
-
-Therefore,
-
-$$
-e^\eta(1-\phi)=\phi.
-$$
-
-Rearranging,
-
-$$
-e^\eta
-======
-
-\phi(1+e^\eta).
-$$
-
-Hence,
-
-$$
-\phi
-====
-
-# \frac{e^\eta}{1+e^\eta}
-
-\frac{1}{1+e^{-\eta}}.
-$$
-
-### Finding $a(\eta)$
-
-From the exponential-family form,
-
-$$
--a(\eta)=\log(1-\phi).
-$$
-
-Therefore,
-
-$$
-a(\eta)
-=======
-
--\log(1-\phi).
-$$
-
-Substituting
-
-$$
-\phi
-====
-
-\frac{1}{1+e^{-\eta}},
-$$
-
-we get
-
-$$
-a(\eta)
-=======
-
--\log\left(
-1-\frac{1}{1+e^{-\eta}}
-\right).
-$$
-
-Simplifying,
-
-$$
-a(\eta)
-=======
-
-\log(1+e^\eta).
-$$
-
-Thus, the Bernoulli distribution can be written in exponential-family form with
-
-$$
-\boxed{
-b(y)=1
-}
-$$
-
-$$
-\boxed{
-T(y)=y
-}
-$$
-
-$$
-\boxed{
-\eta
-====
-
-\log\left(
-\frac{\phi}{1-\phi}
-\right)
-}
-$$
-
-and
-
-$$
-\boxed{
-a(\eta)=\log(1+e^\eta)
-}.
-$$
+<p align="center">
+<strong>
+φ = 1 / (1 + e<sup>−η</sup>)
+</strong>
+</p>
+
+### Finding a(η)
+
+From the exponential-family form:
+
+<p align="center">
+<strong>
+−a(η) = log(1 − φ)
+</strong>
+</p>
+
+Therefore:
+
+<p align="center">
+<strong>
+a(η) = −log(1 − φ)
+</strong>
+</p>
+
+Substituting:
+
+<p align="center">
+<strong>
+φ = 1 / (1 + e<sup>−η</sup>)
+</strong>
+</p>
+
+gives:
+
+<p align="center">
+<strong>
+a(η) = −log(1 − 1 / (1 + e<sup>−η</sup>))
+</strong>
+</p>
+
+which simplifies to:
+
+<p align="center">
+<strong>
+a(η) = log(1 + e<sup>η</sup>)
+</strong>
+</p>
+
+### Final Bernoulli Exponential-Family Form
+
+| Component | Value                    |
+| --------- | ------------------------ |
+| **b(y)**  | 1                        |
+| **T(y)**  | y                        |
+| **η**     | log(φ / (1 − φ))         |
+| **φ**     | 1 / (1 + e<sup>−η</sup>) |
+| **a(η)**  | log(1 + e<sup>η</sup>)   |
 
 ---
 
-### Gaussian Distribution (Fixed Variance)
+## Gaussian Distribution (Fixed Variance)
 
-Consider a Gaussian random variable with fixed variance $\sigma^2$:
+Consider:
 
-$$
-y\sim\mathcal N(\mu,\sigma^2).
-$$
+<p align="center">
+<strong>
+y ~ N(μ, σ²)
+</strong>
+</p>
 
-Its probability density function is
+The Gaussian probability density function is:
 
-$$
-P(y;\mu)
-========
-
-\frac{1}{\sqrt{2\pi\sigma^2}}
-\exp\left(
--\frac{(y-\mu)^2}{2\sigma^2}
-\right).
-$$
+<p align="center">
+<strong>
+P(y; μ) = 1 / √(2πσ²) × exp(−(y − μ)² / (2σ²))
+</strong>
+</p>
 
 Expand the squared term:
 
-$$
-(y-\mu)^2
-=========
+<p align="center">
+<strong>
+(y − μ)² = y² − 2μy + μ²
+</strong>
+</p>
 
-y^2-2\mu y+\mu^2.
-$$
+Substituting:
 
-Substituting this into the density,
+<p align="center">
+<strong>
+P(y; μ) = 1 / √(2πσ²) × exp((μ/σ²)y − μ²/(2σ²) − y²/(2σ²))
+</strong>
+</p>
 
-$$
-P(y;\mu)
-========
+Compare this with:
 
-\frac{1}{\sqrt{2\pi\sigma^2}}
-\exp\left(
--\frac{y^2-2\mu y+\mu^2}{2\sigma^2}
-\right).
-$$
+<p align="center">
+<strong>
+P(y; η) = b(y) exp(ηT(y) − a(η))
+</strong>
+</p>
 
-Separating the terms,
+We can identify:
 
-$$
-P(y;\mu)
-========
+<p align="center"><strong>T(y) = y</strong></p>
 
-\frac{1}{\sqrt{2\pi\sigma^2}}
-\exp\left(
-\frac{\mu}{\sigma^2}y
----------------------
+<p align="center">
+<strong>
+η = μ / σ²
+</strong>
+</p>
 
-## \frac{\mu^2}{2\sigma^2}
+Since:
 
-\frac{y^2}{2\sigma^2}
-\right).
-$$
+<p align="center">
+<strong>
+μ = ησ²
+</strong>
+</p>
 
-Now compare this with
+we get:
 
-$$
-P(y;\eta)
-=========
+<p align="center">
+<strong>
+a(η) = σ²η² / 2
+</strong>
+</p>
 
-b(y)
-\exp\left(
-\eta T(y)-a(\eta)
-\right).
-$$
+The terms that depend only on `y` are included in the base measure:
 
-We can identify
+<p align="center">
+<strong>
+b(y) = 1 / √(2πσ²) × exp(−y² / (2σ²))
+</strong>
+</p>
 
-$$
-T(y)=y,
-$$
+### Final Gaussian Exponential-Family Form
 
-and
-
-$$
-\eta
-====
-
-\frac{\mu}{\sigma^2}.
-$$
-
-Since
-
-$$
-\mu=\eta\sigma^2,
-$$
-
-we have
-
-$$
-\frac{\mu^2}{2\sigma^2}
-=======================
-
-\frac{\eta^2\sigma^2}{2}.
-$$
-
-Therefore,
-
-$$
-a(\eta)
-=======
-
-\frac{\sigma^2\eta^2}{2}.
-$$
-
-The terms that depend only on $y$ are absorbed into $b(y)$:
-
-$$
-b(y)
-====
-
-\frac{1}{\sqrt{2\pi\sigma^2}}
-\exp\left(
--\frac{y^2}{2\sigma^2}
-\right).
-$$
-
-Hence, for a Gaussian distribution with fixed variance,
-
-$$
-\boxed{
-T(y)=y
-}
-$$
-
-$$
-\boxed{
-\eta=\frac{\mu}{\sigma^2}
-}
-$$
-
-and
-
-$$
-\boxed{
-a(\eta)=\frac{\sigma^2\eta^2}{2}
-}.
-$$
+| Component | Value                          |
+| --------- | ------------------------------ |
+| **b(y)**  | 1 / √(2πσ²) × exp(−y² / (2σ²)) |
+| **T(y)**  | y                              |
+| **η**     | μ / σ²                         |
+| **a(η)**  | σ²η² / 2                       |
