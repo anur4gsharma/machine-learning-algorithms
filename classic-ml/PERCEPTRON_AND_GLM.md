@@ -40,29 +40,33 @@ $$
 
 ## Exponential Families
 
-A probability distribution belongs to the exponential family if it can be written in the form
+A probability distribution belongs to the **exponential family** if it can be written in the form
 
 $$
 P(y;\eta)
 =========
 
-b(y)\exp\left(\eta^T T(y)-a(\eta)\right)
+b(y)\exp\left(\eta^T T(y)-a(\eta)\right).
 $$
 
-where:
+Here:
 
-* $y$ = observed data
-* $\eta$ = natural parameter
-* $T(y)$ = sufficient statistic
-* $b(y)$ = base measure
-* $a(\eta)$ = log-partition function
+* $y$ is the observed data.
+* $\eta$ is the **natural parameter**.
+* $T(y)$ is the **sufficient statistic**.
+* $b(y)$ is the **base measure**.
+* $a(\eta)$ is the **log-partition function**.
+
+---
+
+## Examples
 
 ### Bernoulli Distribution
 
 For binary data,
 
 $$
-y\in{0,1}
+y\in{0,1}.
 $$
 
 Let
@@ -80,18 +84,49 @@ P(y;\phi)
 \phi^y(1-\phi)^{1-y}.
 $$
 
-Rewrite this using an exponential:
+We can rewrite this using an exponential:
 
 $$
 P(y;\phi)
 =========
 
 \exp\left(
-\log\left(\phi^y(1-\phi)^{1-y}\right)
+\log\left(
+\phi^y(1-\phi)^{1-y}
+\right)
 \right).
 $$
 
 Using logarithm rules,
+
+$$
+P(y;\phi)
+=========
+
+\exp\left(
+y\log\phi
++
+(1-y)\log(1-\phi)
+\right).
+$$
+
+Expanding,
+
+$$
+P(y;\phi)
+=========
+
+\exp\left(
+y\log\phi
+---------
+
+y\log(1-\phi)
++
+\log(1-\phi)
+\right).
+$$
+
+Therefore,
 
 $$
 P(y;\phi)
@@ -104,16 +139,18 @@ y\log\left(\frac{\phi}{1-\phi}\right)
 \right).
 $$
 
-Comparing this with the exponential-family form
+Now compare this with the exponential-family form:
 
 $$
 P(y;\eta)
 =========
 
-b(y)\exp\left(\eta T(y)-a(\eta)\right),
+b(y)\exp\left(
+\eta T(y)-a(\eta)
+\right).
 $$
 
-we obtain
+We can identify the individual components as
 
 $$
 b(y)=1,
@@ -129,16 +166,65 @@ $$
 \eta
 ====
 
-\log\left(\frac{\phi}{1-\phi}\right).
+\log\left(
+\frac{\phi}{1-\phi}
+\right).
 $$
 
-Solving for $\phi$,
+### Solving for $\phi$
+
+Starting with
+
+$$
+\eta
+====
+
+\log\left(
+\frac{\phi}{1-\phi}
+\right),
+$$
+
+exponentiating both sides gives
+
+$$
+e^\eta
+======
+
+\frac{\phi}{1-\phi}.
+$$
+
+Therefore,
+
+$$
+e^\eta(1-\phi)=\phi.
+$$
+
+Rearranging,
+
+$$
+e^\eta
+======
+
+\phi(1+e^\eta).
+$$
+
+Hence,
 
 $$
 \phi
 ====
 
+# \frac{e^\eta}{1+e^\eta}
+
 \frac{1}{1+e^{-\eta}}.
+$$
+
+### Finding $a(\eta)$
+
+From the exponential-family form,
+
+$$
+-a(\eta)=\log(1-\phi).
 $$
 
 Therefore,
@@ -153,10 +239,13 @@ $$
 Substituting
 
 $$
-\phi=\frac{1}{1+e^{-\eta}},
+\phi
+====
+
+\frac{1}{1+e^{-\eta}},
 $$
 
-gives
+we get
 
 $$
 a(\eta)
@@ -164,17 +253,40 @@ a(\eta)
 
 -\log\left(
 1-\frac{1}{1+e^{-\eta}}
-\right)
+\right).
+$$
+
+Simplifying,
+
+$$
+a(\eta)
 =======
 
 \log(1+e^\eta).
 $$
 
-Thus, the Bernoulli distribution is an exponential-family distribution with
+Thus, the Bernoulli distribution can be written in exponential-family form with
 
 $$
 \boxed{
-\eta=\log\left(\frac{\phi}{1-\phi}\right)
+b(y)=1
+}
+$$
+
+$$
+\boxed{
+T(y)=y
+}
+$$
+
+$$
+\boxed{
+\eta
+====
+
+\log\left(
+\frac{\phi}{1-\phi}
+\right)
 }
 $$
 
@@ -186,15 +298,17 @@ a(\eta)=\log(1+e^\eta)
 }.
 $$
 
+---
+
 ### Gaussian Distribution (Fixed Variance)
 
-For a Gaussian distribution with fixed variance $\sigma^2$,
+Consider a Gaussian random variable with fixed variance $\sigma^2$:
 
 $$
-y\sim\mathcal N(\mu,\sigma^2),
+y\sim\mathcal N(\mu,\sigma^2).
 $$
 
-the density is
+Its probability density function is
 
 $$
 P(y;\mu)
@@ -206,7 +320,28 @@ P(y;\mu)
 \right).
 $$
 
-Expanding the exponent,
+Expand the squared term:
+
+$$
+(y-\mu)^2
+=========
+
+y^2-2\mu y+\mu^2.
+$$
+
+Substituting this into the density,
+
+$$
+P(y;\mu)
+========
+
+\frac{1}{\sqrt{2\pi\sigma^2}}
+\exp\left(
+-\frac{y^2-2\mu y+\mu^2}{2\sigma^2}
+\right).
+$$
+
+Separating the terms,
 
 $$
 P(y;\mu)
@@ -223,29 +358,87 @@ P(y;\mu)
 \right).
 $$
 
-Comparing with
+Now compare this with
 
 $$
 P(y;\eta)
 =========
 
-b(y)\exp\left(\eta T(y)-a(\eta)\right),
+b(y)
+\exp\left(
+\eta T(y)-a(\eta)
+\right).
 $$
 
-we can identify
+We can identify
 
 $$
 T(y)=y,
 $$
 
+and
+
 $$
-\eta=\frac{\mu}{\sigma^2},
+\eta
+====
+
+\frac{\mu}{\sigma^2}.
+$$
+
+Since
+
+$$
+\mu=\eta\sigma^2,
+$$
+
+we have
+
+$$
+\frac{\mu^2}{2\sigma^2}
+=======================
+
+\frac{\eta^2\sigma^2}{2}.
+$$
+
+Therefore,
+
+$$
+a(\eta)
+=======
+
+\frac{\sigma^2\eta^2}{2}.
+$$
+
+The terms that depend only on $y$ are absorbed into $b(y)$:
+
+$$
+b(y)
+====
+
+\frac{1}{\sqrt{2\pi\sigma^2}}
+\exp\left(
+-\frac{y^2}{2\sigma^2}
+\right).
+$$
+
+Hence, for a Gaussian distribution with fixed variance,
+
+$$
+\boxed{
+T(y)=y
+}
+$$
+
+$$
+\boxed{
+\eta=\frac{\mu}{\sigma^2}
+}
 $$
 
 and
 
 $$
-a(\eta)=\frac{\sigma^2\eta^2}{2}.
+\boxed{
+a(\eta)=\frac{\sigma^2\eta^2}{2}
+}.
 $$
-
-The terms that depend only on $y$ are absorbed into $b(y)$.
