@@ -1,6 +1,6 @@
 # Machine Learning Algorithms
 
-This repository contains notes and implementations of classic machine learning algorithms.
+This repository contains notes and implementations of classic machine learning algorithms. These notes are handmade then coded by a LLM for presentation.
 
 ## Repository Structure
 
